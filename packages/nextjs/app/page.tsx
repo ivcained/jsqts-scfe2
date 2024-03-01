@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
+import { EAS, Offchain, PartialTypedDataConfig, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { Group } from "@visx/group";
 import { letterFrequency } from "@visx/mock-data";
 import { scaleBand, scaleLinear } from "@visx/scale";
-import { Bar } from "@visx/shape";
+import { Bar, BarGroup } from "@visx/shape";
 import { createChart } from "lightweight-charts";
 import type { NextPage } from "next";
 import DeviceMotion from "react-device-motion";
@@ -25,7 +25,6 @@ const Home: NextPage = () => {
     const signer = useSigner();
     const attest = async () => {
       if (signer == null) return;
-
       const eas = new EAS(easContractAddress);
       // Signer must be an ethers-like signer.
       await eas.connect(signer);
@@ -90,10 +89,9 @@ const Home: NextPage = () => {
         );
       }
 
-      // ... somewhere else, render it ...
-      <BarGraph />;
+      // ... somewhere else, render it
 
-      /* const tx = await eas.attest({
+      const tx = await eas.attest({
         schema: schemaUID,
         data: {
           recipient: "0x0000000000000000000000000000000000000000",
@@ -150,7 +148,7 @@ const Home: NextPage = () => {
     function ArticleCard(props: { title: string; href: string; description: string }) {
       return (
         <a
-          href={props.href + "?utm_source=next-template"}
+          href={props.href + "?utm_source=jsqts-home"}
           target="_blank"
           className="flex flex-col border border-zinc-800 p-4 rounded-lg hover:bg-zinc-900 transition-colors hover:border-zinc-700"
         >
@@ -164,9 +162,16 @@ const Home: NextPage = () => {
 
     return (
       <>
-        <button onClick={() => setCount(count + 1)}>Squat!</button>
+        <button
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+          onClick={() => setCount(count + 1)}
+        >
+          Squat!
+        </button>
+        <p>_</p>
         <span>Score: {count}</span>
         {/* Assuming ArticleCard is imported elsewhere and it doesn't matter here */}
+        <p>_</p>
         <ArticleCard title="How to Play" href="#" description="1 Squat IRL = ‘1 $JSQT’" />
       </>
     );
@@ -176,18 +181,19 @@ const Home: NextPage = () => {
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
           <h1 className="text-center">
-            <span className="block text-2xl mb-2">J</span>
+            <span className="block text-2xl mb-2">JSQTS</span>
             <span className="block text-4xl font-bold">
               <SquatComponent />
             </span>
             <span className="block text-4xl font-bold">SQTS</span>
           </h1>
           <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium">Connected Address:</p>
+            <p className="my-2 font-medium">Connected Add:</p>
             <Address address={connectedAddress} />
           </div>
           <p className="text-center text-lg">
             1 Squat irl = 1 $JSQT
+            <p></p>
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
               Win rewards on Base.
             </code>
@@ -195,11 +201,11 @@ const Home: NextPage = () => {
           <p className="text-center text-lg">
             Attest Your Squats{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              = Earn Rewards
+              Earn Rewards
             </code>{" "}
-            -{" "}
+            +{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              ETH on Base Chain.
+              ETH on Base.
             </code>
           </p>
         </div>
