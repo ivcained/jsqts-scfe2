@@ -18,6 +18,66 @@ import { useProvider, useSigner } from "~~/utils/wagmi";
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
   const SquatComponent = () => {
+    // Sensitivity is how much the device needs to move in 3D space for a squat to register.
+    const sensitivity = 10;
+    
+    const [squatState, setSquatState] = useState(false);
+    const [count, setCount] = useState(0);
+    const [timeoutId, setTimeoutId] = useState(null);
+    
+    const handleDeviceMotion = ({ acceleration }) => {
+      if (!squatState && acceleration.y > sensitivity) {
+        setSquatState(true);
+        setCount(count + 1);
+      } else if (squatState && acceleration.y < -sensitivity) {
+        setSquatState(false);
+      }
+    };
+    
+    useEffect(() => {
+      if (count > 0 && timeoutId === null) {
+        const id = setTimeout(() => {
+          attest();  
+          setCount(0);   
+        }, 12 * 60 * 60 * 1000 /* 12 hours */);
+        setTimeoutId(id);
+      }
+    }, [count]);
+  
+    return (
+      <DeviceMotion>
+          {motionData => {
+              handleDeviceMotion(motionData);
+              return (
+                  // component design goes here
+                  <>
+                    <button
+                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+                        onClick={attest}
+                    >
+                        Attest
+                    </button>
+                    <p>Score: {count}</p>
+                  </>
+              )
+          }}
+      </DeviceMotion>
+    );
+  };
+  //new counter motion based
+
+
+ //old counter 
+ /* const SquatComponent = () => {
+    const HandleDeviceMotion = ({ acceleration }) => {
+      if (!squatState && acceleration.y > sensitivity) {
+        setSquatState(true);
+        setCount(prevCount => prevCount + 1);
+      } else if (squatState && acceleration.y < -sensitivity) {
+        setSquatState(false);
+      }
+    };
+
     const [count, setCount] = useState(0);
     const [timeoutId, setTimeoutId] = useState("");
     const easContractAddress = "0x4200000000000000000000000000000000000021";
@@ -89,7 +149,9 @@ const Home: NextPage = () => {
         );
       }
 
-      // ... somewhere else, render it
+      // ... somewhere else, render it 
+      
+      */
 
       const tx = await eas.attest({
         schema: schemaUID,
@@ -221,7 +283,6 @@ const Home: NextPage = () => {
                 </Link>{" "}
                 Now.
               </p>
-              <SquatComponent />
             </div>
             <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
               <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
