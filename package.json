@@ -37,6 +37,15 @@
   },
   "dependencies": {
     "@ethereum-attestation-service/eas-sdk": "^1.5.0",
+    "@visx/curve": "^3.3.0",
+    "@visx/event": "^3.3.0",
+    "@visx/gradient": "^3.3.0",
+    "@visx/grid": "^3.5.0",
+    "@visx/mock-data": "^3.3.0",
+    "@visx/responsive": "^3.3.0",
+    "@visx/tooltip": "^3.3.0",
+    "@visx/vendor": "^3.5.0",
+    "lightweight-charts": "^4.1.3",
     "react-device-motion": "^0.1.0"
   }
 }
